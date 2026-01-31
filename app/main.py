@@ -6,9 +6,9 @@ from app.api.documents import router as document_router
 from app.db.base import Base
 from app.db.session import engine
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 
 @asynccontextmanager

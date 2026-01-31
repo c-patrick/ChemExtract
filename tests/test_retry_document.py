@@ -4,9 +4,7 @@ def test_retry_failed_document(client, monkeypatch, db_session):
         raise ValueError("Forced failure")
 
     # Patch in the background module where it's imported
-    monkeypatch.setattr(
-        "app.services.background.fake_parse_document", fail_parse_document
-    )
+    monkeypatch.setattr("app.services.background.parse_document", fail_parse_document)
 
     payload = {
         "source_type": "text",
@@ -36,7 +34,7 @@ def test_retry_failed_document(client, monkeypatch, db_session):
 
     # Patch the success version in the background module
     monkeypatch.setattr(
-        "app.services.background.fake_parse_document", succeed_parse_document
+        "app.services.background.parse_document", succeed_parse_document
     )
 
     # Retry processing the failed document

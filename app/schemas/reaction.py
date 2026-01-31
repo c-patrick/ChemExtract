@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict
+from typing import Optional, List, Dict
 
 
 class ReactionResponse(BaseModel):
@@ -11,3 +12,14 @@ class ReactionResponse(BaseModel):
     summary: str
     confidence_score: float
     parser_version: str
+
+
+class ReactionParsed(BaseModel):
+    summary: str
+    confidence_score: float
+    parser_version: str
+    yield_percentage: Optional[float]
+
+    reagents: List[str]
+    solvents: List[str]
+    conditions: Dict[str, str]

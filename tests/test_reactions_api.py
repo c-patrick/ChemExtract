@@ -29,7 +29,7 @@ def test_get_reaction_success(client):
                 "parser_version": "1.0.0",
             }
 
-        monkeypatch.setattr("app.services.parser.fake_parse_document", slow_parse)
+        monkeypatch.setattr("app.services.background.parse_document", slow_parse)
 
         payload = {
             "source_type": "text",

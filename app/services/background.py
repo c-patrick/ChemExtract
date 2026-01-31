@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.models.document import Document
 from app.models.reaction import Reaction
 
-from app.services.parser import fake_parse_document
+from app.services.parser import parse_document
 
 
 def process_document(document_id: int, db: Session):
@@ -22,7 +22,7 @@ def process_document(document_id: int, db: Session):
         db.commit()
 
     try:
-        result = fake_parse_document(doc.original_text)
+        result = parse_document(doc.original_text)
 
         reaction = Reaction(
             document_id=doc.id,

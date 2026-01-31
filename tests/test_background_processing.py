@@ -42,7 +42,7 @@ def test_background_processing_failure(db_session, monkeypatch):
     def fake_fail(text: str):
         raise ValueError("Parsing failed intentionally")
 
-    monkeypatch.setattr("app.services.background.fake_parse_document", fake_fail)
+    monkeypatch.setattr("app.services.background.parse_document", fake_fail)
 
     # Process the document in the background
     process_document(doc.id, db_session)
