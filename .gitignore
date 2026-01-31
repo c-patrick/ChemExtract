@@ -1,5 +1,6 @@
-### test database ###
+### For Development ###
 test.db
+UNDERSTANDING.md
 
 ### dotenv ###
 .env
