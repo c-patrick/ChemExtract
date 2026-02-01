@@ -24,12 +24,7 @@ def process_document(document_id: int, db: Session):
     try:
         result = parse_document(doc.original_text)
 
-        reaction = Reaction(
-            document_id=doc.id,
-            summary=result["summary"],
-            confidence_score=result["confidence_score"],
-            parser_version=result["parser_version"],
-        )
+        reaction = Reaction(document_id=doc.id, **result)
 
         db.add(reaction)
         doc.status = "parsed"

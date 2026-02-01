@@ -13,9 +13,11 @@ class Reaction(Base):
     parser_version: Mapped[str] = mapped_column(String(50))
 
     # Structured fields for chemical reaction details
-    reagents = Column(JSON, nullable=True)  # list of {name, quantity}
-    solvents = Column(JSON, nullable=True)  # list of strings
-    conditions = Column(JSON, nullable=True)  # {temperature, time, atmosphere}
+    reagents = Column(JSON, nullable=True, default=list)  # list of {name, quantity}
+    solvents = Column(JSON, nullable=True, default=list)  # list of strings
+    conditions = Column(
+        JSON, nullable=True, default=dict
+    )  # {temperature, time, atmosphere}
     yield_percentage = Column(Float, nullable=True)
 
     document = relationship("Document")

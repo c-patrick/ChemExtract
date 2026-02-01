@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from app.core.config import settings
 from app.db.base import Base
 from app.db.session import get_db, engine as prod_engine
 from app.models.document import Document  # noqa: F401
@@ -36,3 +37,8 @@ def client():
 
     with TestClient(fastapi_app) as c:
         yield c
+
+
+@pytest.fixture(autouse=True)
+def force_fake_parser(monkeypatch):
+    monkeypatch.setattr(settings, "parser_backend", "fake")

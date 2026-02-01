@@ -67,10 +67,12 @@ function App() {
       const res = await fetch(`${API_BASE}/documents/${document.id}`);
       const data = await res.json();
       setDocument(data);
+      // Refresh the documents list to show updated status
+      fetchDocuments(page);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [document]);
+  }, [document, page]);
 
   // Fetch reaction when parsed
   useEffect(() => {
@@ -97,6 +99,20 @@ function App() {
       <button onClick={submitDocument} style={{ marginTop: "1rem" }}>
         Parse Reaction
       </button>
+
+      {document && (
+        <p>
+          Status: <strong>{document.status}</strong>
+        </p>
+      )}
+
+      {reaction && (
+        <div style={{ marginTop: "1rem" }}>
+          <h3>Parsed Reaction</h3>
+          <p>{reaction.summary}</p>
+          <p>Confidence: {reaction.confidence_score}</p>
+        </div>
+      )}
 
       <h2 style={{ marginTop: "2rem" }}>Document History</h2>
 
@@ -143,20 +159,6 @@ function App() {
           Next
         </button>
       </div>
-
-      {document && (
-        <p>
-          Status: <strong>{document.status}</strong>
-        </p>
-      )}
-
-      {reaction && (
-        <div style={{ marginTop: "1rem" }}>
-          <h3>Parsed Reaction</h3>
-          <p>{reaction.summary}</p>
-          <p>Confidence: {reaction.confidence_score}</p>
-        </div>
-      )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
