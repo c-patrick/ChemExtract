@@ -13,6 +13,12 @@ class ReactionResponse(BaseModel):
     confidence_score: float
     parser_version: str
 
+    yield_percentage: Optional[float]
+
+    reagents: List[str]
+    solvents: List[str]
+    conditions: Dict[str, str]
+
 
 class ReactionParsed(BaseModel):
     summary: str

@@ -126,3 +126,18 @@ def reprocess_document(
     )  # Background tasks cannot reuse request DB sessions, so need to explicitly create a new session
 
     return doc
+
+
+@router.get(
+    "/{document_id}/reaction/details",
+    response_model=ReactionResponse,
+)
+def get_reaction_details(document_id: int, db: Session = Depends(get_db)):
+    reaction = (
+        db.query(Reaction).filter(Reaction.document_id == document_id).one_or_none()
+    )
+
+    if not reaction:
+        raise HTTPException(status_code=404, detail="Reaction not found")
+
+    return reaction
