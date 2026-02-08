@@ -1,11 +1,12 @@
 from app.models.document import Document
 from app.models.reaction import Reaction
+from app.schemas import reaction
+
 
 def test_create_reaction(db_session):
     # Create and add a Document to satisfy the ForeignKey constraint
     doc = Document(
-        source_type="text",
-        original_text="This is a test reaction write-up."
+        source_type="text", original_text="This is a test reaction write-up."
     )
 
     db_session.add(doc)
@@ -17,7 +18,9 @@ def test_create_reaction(db_session):
         document_id=doc.id,
         summary="This is a summary of the reaction.",
         confidence_score=0.95,
-        parser_version="1.0.0"
+        parser_version="v1",
+        parser_backend="fake",
+        model_name=None,
     )
 
     # Add the reaction to the session and commit
@@ -30,7 +33,9 @@ def test_create_reaction(db_session):
     assert reaction.document_id == doc.id
     assert reaction.summary == "This is a summary of the reaction."
     assert reaction.confidence_score == 0.95
-    assert reaction.parser_version == "1.0.0"
+    assert reaction.parser_backend == "fake"
+    assert reaction.model_name is None
+    assert reaction.parser_version == "v1"
 
     # Close the session
     db_session.close()

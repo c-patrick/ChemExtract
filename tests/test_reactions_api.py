@@ -26,7 +26,9 @@ def test_get_reaction_success(client):
             return {
                 "summary": "This is a summary of the chemical reaction.",
                 "confidence_score": 0.95,
-                "parser_version": "1.0.0",
+                "parser_version": "v1",
+                "parser_backend": "fake",
+                "model_name": None,
             }
 
         monkeypatch.setattr("app.services.background.parse_document", slow_parse)

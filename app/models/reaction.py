@@ -1,4 +1,5 @@
-from sqlalchemy import ForeignKey, String, Float, Column, JSON
+from sqlalchemy import ForeignKey, String, Float, Column, JSON, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
@@ -10,7 +11,6 @@ class Reaction(Base):
     document_id: Mapped[int] = mapped_column(ForeignKey("documents.id"))
     summary: Mapped[str] = mapped_column(String(255))
     confidence_score: Mapped[float] = mapped_column(Float)
-    parser_version: Mapped[str] = mapped_column(String(50))
 
     # Structured fields for chemical reaction details
     reagents = Column(JSON, nullable=True, default=list)  # list of {name, quantity}
@@ -19,5 +19,10 @@ class Reaction(Base):
         JSON, nullable=True, default=dict
     )  # {temperature, time, atmosphere}
     yield_percentage = Column(Float, nullable=True)
+
+    parser_backend = Column(String, nullable=False)
+    model_name = Column(String, nullable=True)
+    parser_version = Column(String, nullable=False, default="v1")
+    parsed_at = Column(DateTime(timezone=True), server_default=func.now())
 
     document = relationship("Document")

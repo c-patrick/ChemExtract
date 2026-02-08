@@ -264,7 +264,13 @@ function App() {
               )}
             </ul>
 
-            <p><em>Parser version: {selectedReaction.parser_version}</em></p>
+            <p>
+              <em>
+                Parser backend: {selectedReaction.parser_backend} <br />
+                Model name: {selectedReaction.model_name ?? "None"} <br />
+                Parser version: {selectedReaction.parser_version}
+              </em>
+            </p>
             <button
               style={{ marginTop: "1rem" }}
               onClick={() => setIsModalOpen(false)}

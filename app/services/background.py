@@ -23,6 +23,7 @@ def process_document(document_id: int, db: Session):
 
     try:
         result = parse_document(doc.original_text)
+        print(result)
 
         reaction = Reaction(document_id=doc.id, **result)
 

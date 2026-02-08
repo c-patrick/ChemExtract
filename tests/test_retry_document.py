@@ -29,7 +29,9 @@ def test_retry_failed_document(client, monkeypatch, db_session):
         return {
             "summary": "This is a successful summary after retry.",
             "confidence_score": 0.95,
-            "parser_version": "1.0.0",
+            "parser_version": "v1",
+            "parser_backend": "fake",
+            "model_name": None,
         }
 
     # Patch the success version in the background module

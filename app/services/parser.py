@@ -17,11 +17,13 @@ def fake_parse_document(text: str) -> dict:
     return {
         "summary": "Fake parsed reaction",
         "confidence_score": 0.9,
-        "parser_version": "fake-1.0",
         "yield_percentage": None,
         "reagents": [],
         "solvents": [],
         "conditions": {},
+        "parser_version": "v1",
+        "parser_backend": "fake",
+        "model_name": None,
     }
 
 
@@ -36,9 +38,13 @@ def _extract_json(text: str) -> str:
     return text.strip()
 
 
-def _add_parser_version(text: str, parser_version: str) -> str:
-    data = json.loads(text)
-    data["parser_version"] = parser_version
+def _add_metadata(text: str, extra_fields: dict[str, object]) -> str:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return text  # or raise, depending on your pipeline
+
+    data.update(extra_fields)
     return json.dumps(data)
 
 
@@ -55,13 +61,19 @@ def call_openai_raw(text: str, model: str) -> str:
     return response.choices[0].message.content
 
 
-def parse_openai_json(raw: str, model: str) -> ReactionParsed:
+def parse_openai_json(raw: str) -> ReactionParsed:
     json_text = _extract_json(raw)
 
-    if "parser_version" not in json_text:
-        json_text = _add_parser_version(json_text, parser_version=model)
-
-    return ReactionParsed.model_validate_json(json_text)
+    json_updated = _add_metadata(
+        json_text,
+        {
+            "parser_backend": settings.parser_backend,
+            "model_name": settings.openai_model,
+            "parser_version": "v1",
+        },
+    )
+    print(f"Extracted JSON: {json_updated}")
+    return ReactionParsed.model_validate_json(json_updated)
 
 
 def openai_parse_document(text: str) -> ReactionParsed | None:
@@ -71,7 +83,7 @@ def openai_parse_document(text: str) -> ReactionParsed | None:
     if len(text) > 15_000:
         raise ValueError("Document too long for OpenAI parsing")
 
-    model = "gpt-4o-mini"
+    model = settings.openai_model
 
     prompt = f"""
 You are a chemistry assistant.
@@ -92,7 +104,8 @@ Experimental text:
 """
 
     raw = call_openai_raw(prompt, model)
-    parsed = parse_openai_json(raw, model)
+    parsed = parse_openai_json(raw)
+    print(f"Parsed OpenAI output: {parsed}")
 
     if parsed.confidence_score < settings.min_parse_confidence:
         return None  # <-- important change
